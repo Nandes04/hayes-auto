@@ -17,7 +17,6 @@ body{
     font-family: Arial, sans-serif;
 }
 
-/* Caixa principal */
 .login-box{
     position:absolute;
     top:70%;
@@ -30,7 +29,6 @@ body{
     box-shadow:0 0 25px rgba(0,0,0,.7);
 }
 
-/* Inputs escuros */
 input{
     width:100%;
     padding:10px;
@@ -62,15 +60,39 @@ button:hover{
     opacity:.85;
 }
 </style>
-
 </head>
+
 <body>
 
 <div class="login-box">
-    <input placeholder="Utilizador">
-    <input type="password" placeholder="Senha">
-    <button>Entrar</button>
+    <input id="user" placeholder="Utilizador">
+    <input id="pass" type="password" placeholder="Senha">
+    <button onclick="login()">Entrar</button>
 </div>
+
+<script>
+const users = [
+  {user:"patrao", pass:"1234", role:"admin"},
+  {user:"joao", pass:"1234", role:"mecanico"}
+];
+
+function login(){
+  const u = document.getElementById("user").value;
+  const p = document.getElementById("pass").value;
+
+  const found = users.find(x => x.user === u && x.pass === p);
+
+  if(!found){
+    alert("Login inválido");
+    return;
+  }
+
+  localStorage.setItem("role", found.role);
+  localStorage.setItem("user", found.user);
+
+  window.location.href = "dashboard.html";
+}
+</script>
 
 </body>
 </html>
