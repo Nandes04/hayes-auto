@@ -4,154 +4,133 @@
 <meta charset="UTF-8">
 <title>Hayes Auto</title>
 <style>
-body{margin:0;background:#0f172a;color:white;font-family:Arial}
-.container{padding:20px}
-.card{background:#1e293b;padding:20px;border-radius:12px;margin-bottom:15px}
-input,select,button{padding:8px;margin-top:6px;width:100%}
-button{background:#2563eb;color:white;border:none;border-radius:6px}
-.row{display:flex;gap:10px}
-.small{max-width:300px}
+body{
+    margin:0;
+    font-family:Arial, sans-serif;
+    background:#0f172a;
+    color:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+.box{
+    background:#1e293b;
+    padding:30px;
+    border-radius:12px;
+    width:320px;
+    box-shadow:0 0 20px rgba(0,0,0,.5);
+}
+input,select,button{
+    width:100%;
+    padding:10px;
+    margin-top:10px;
+    border-radius:6px;
+    border:none;
+}
+button{
+    background:#2563eb;
+    color:white;
+    cursor:pointer;
+}
+button:hover{opacity:.8}
 .hidden{display:none}
-table{width:100%;margin-top:10px;border-collapse:collapse}
-td,th{border-bottom:1px solid #334155;padding:6px;text-align:left}
+.panel{
+    width:90%;
+    max-width:900px;
+}
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+td,th{
+    padding:8px;
+    border-bottom:1px solid #334155;
+}
+.adminOnly{display:none}
 </style>
 </head>
 <body>
 
-<div id="login" class="card small">
+<div class="box" id="loginBox">
 <h2>Hayes Auto</h2>
-<input id="lu" placeholder="Utilizador">
-<input id="lp" type="password" placeholder="Senha">
+<input id="user" placeholder="Utilizador">
+<input id="pass" type="password" placeholder="Senha">
 <button onclick="login()">Entrar</button>
 <p id="msg"></p>
 </div>
 
-<div id="app" class="container hidden">
-
+<div class="panel hidden" id="panel">
 <h2 id="welcome"></h2>
 
-<div class="row">
-<button onclick="show('services')">Serviços</button>
-<button onclick="show('stock')">Stock</button>
-<button onclick="show('users')">Funcionários</button>
+<h3>Serviços</h3>
+<input id="serviceName" placeholder="Serviço feito">
+<input id="serviceCost" placeholder="Valor €">
+<button onclick="addService()">Registar serviço</button>
+
+<table id="servicesTable">
+<tr><th>Serviço</th><th>€</th><th>Por</th></tr>
+</table>
+
+<h3>Stock</h3>
+<table>
+<tr><th>Peça</th><th>Quantidade</th><th class="adminOnly">Editar</th></tr>
+<tr>
+<td>Filtro de ar</td>
+<td id="s1">10</td>
+<td class="adminOnly"><button onclick="changeStock('s1')">Alterar</button></td>
+</tr>
+<tr>
+<td>Óleo motor</td>
+<td id="s2">15</td>
+<td class="adminOnly"><button onclick="changeStock('s2')">Alterar</button></td>
+</tr>
+</table>
+
 <button onclick="logout()">Sair</button>
 </div>
 
-<div id="services" class="card">
-<h3>Novo serviço</h3>
-<select id="part"></select>
-<input id="qty" type="number" value="1">
-<button onclick="addService()">Adicionar</button>
-
-<table>
-<thead><tr><th>Peça</th><th>Qtd</th><th>Total €</th><th>Data</th></tr></thead>
-<tbody id="serviceList"></tbody>
-</table>
-</div>
-
-<div id="stock" class="card hidden">
-<h3>Stock</h3>
-<table>
-<thead><tr><th>Peça</th><th>Qtd</th><th>Preço €</th><th>Ações</th></tr></thead>
-<tbody id="stockList"></tbody>
-</table>
-</div>
-
-<div id="users" class="card hidden">
-<h3>Criar funcionário</h3>
-<input id="nu" placeholder="Nome">
-<input id="np" placeholder="Senha">
-<select id="nr">
-<option value="mecanico">Mecânico</option>
-<option value="admin">Admin/Patrão</option>
-</select>
-<button onclick="addUser()">Criar conta</button>
-</div>
-
-</div>
-
 <script>
-let users=[
- {u:"patrao",p:"1234",r:"admin"},
- {u:"mecanico",p:"1111",r:"mecanico"}
-];
+const users=[
+{u:"patrao",p:"1234",role:"admin"},
+{u:"mecanico",p:"1111",role:"mec"}
+]
 
-let stock=[
- {name:"Travões",qty:20,price:50},
- {name:"Óleo",qty:30,price:25},
- {name:"Bateria",qty:10,price:120}
-];
-
-let services=[];
-let current=null;
+let currentUser=null
 
 function login(){
- let f=users.find(x=>x.u===lu.value&&x.p===lp.value);
- if(!f){msg.innerText="Login inválido";return;}
- current=f;
- loginDiv(false);
+let u=user.value
+let p=pass.value
+let found=users.find(x=>x.u===u && x.p===p)
+if(!found){msg.innerText="Login inválido";return}
+currentUser=found
+loginBox.classList.add("hidden")
+panel.classList.remove("hidden")
+welcome.innerText="Bem-vindo "+u+" ("+found.role+")"
+
+if(found.role==="admin"){
+document.querySelectorAll(".adminOnly").forEach(e=>e.style.display="table-cell")
+}
 }
 
-function loginDiv(show){
- login.style.display=show?"block":"none";
- app.classList.toggle("hidden",show);
- welcome.innerText=`Bem-vindo ${current.u} (${current.r})`;
- render();
- if(current.r!=="admin"){
-   document.querySelector('button[onclick="show(\'users\')"]').style.display="none";
- }
-}
-
-function show(id){
- ["services","stock","users"].forEach(x=>document.getElementById(x).classList.add("hidden"));
- document.getElementById(id).classList.remove("hidden");
-}
-
-function render(){
- part.innerHTML="";
- stock.forEach((s,i)=>{
-   part.innerHTML+=`<option value="${i}">${s.name}</option>`;
- });
-
- stockList.innerHTML="";
- stock.forEach((s,i)=>{
-   let edit=current.r==="admin"
-   ? `<input type="number" value="${s.qty}" onchange="stock[${i}].qty=this.value">
-      <input type="number" value="${s.price}" onchange="stock[${i}].price=this.value">`
-   : `${s.qty} | €${s.price}`;
-
-   stockList.innerHTML+=`<tr><td>${s.name}</td><td>${edit}</td><td></td><td></td></tr>`;
- });
-
- serviceList.innerHTML="";
- services.forEach(s=>{
-   serviceList.innerHTML+=`<tr><td>${s.name}</td><td>${s.qty}</td><td>€${s.total}</td><td>${s.date}</td></tr>`;
- });
+function logout(){
+location.reload()
 }
 
 function addService(){
- let i=part.value;
- let q=parseInt(qty.value);
- if(stock[i].qty<q){alert("Stock insuficiente");return;}
- stock[i].qty-=q;
- let total=q*stock[i].price;
- services.push({
-   name:stock[i].name,
-   qty:q,
-   total:total,
-   date:new Date().toLocaleString()
- });
- render();
+let name=serviceName.value
+let cost=serviceCost.value
+if(!name||!cost)return
+let row=servicesTable.insertRow()
+row.insertCell(0).innerText=name
+row.insertCell(1).innerText=cost+"€"
+row.insertCell(2).innerText=currentUser.u
 }
 
-function addUser(){
- users.push({u:nu.value,p:np.value,r:nr.value});
- alert("Conta criada!");
- nu.value=np.value="";
+function changeStock(id){
+let v=prompt("Nova quantidade:")
+if(v!==null) document.getElementById(id).innerText=v
 }
-
-function logout(){location.reload();}
 </script>
 </body>
 </html>
-
