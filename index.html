@@ -1,21 +1,71 @@
 <!DOCTYPE html>
 <html lang="pt-PT">
 <head>
-  <meta charset="UTF-8" />
-  <title>Hayes Auto</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+<meta charset="UTF-8">
+<title>Hayes Auto</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://esm.sh/react"></script>
+<script src="https://esm.sh/react-dom/client"></script>
 </head>
-<body class="bg-gray-900">
-  <div id="root"></div>
 
-  <script type="module">
-    import React from "https://esm.sh/react";
-    import ReactDOM from "https://esm.sh/react-dom/client";
-    import HayesAutoApp from "./app.jsx";
+<body class="bg-gray-900 text-white">
+<div id="root"></div>
 
-    ReactDOM.createRoot(document.getElementById("root")).render(
-      React.createElement(HayesAutoApp)
-    );
-  </script>
+<script>
+const { useState } = React;
+
+function App() {
+  const [user,setUser]=useState(null);
+  const [users,setUsers]=useState([{name:"patrao",pass:"1234",role:"admin"}]);
+  const [stock,setStock]=useState([
+    {name:"Travões",qty:20,price:50},
+    {name:"Óleo",qty:30,price:25},
+    {name:"Bateria",qty:10,price:120}
+  ]);
+  const [services,setServices]=useState([]);
+
+  if(!user) return <Login/>;
+
+  function Login(){
+    const [n,p]=[useState(""),useState("")];
+    return (
+      <div class="flex items-center justify-center h-screen">
+        <div class="bg-gray-800 p-6 rounded-xl w-80">
+          <h1 class="text-xl mb-4 text-center">Hayes Auto</h1>
+          <input class="w-full mb-2 p-2 bg-gray-700" placeholder="Nome" onChange={e=>n[1](e.target.value)}/>
+          <input class="w-full mb-4 p-2 bg-gray-700" type="password" placeholder="Senha" onChange={e=>p[1](e.target.value)}/>
+          <button class="w-full bg-blue-600 p-2" onClick(()=>{
+            const u=users.find(x=>x.name===n[0]&&x.pass===p[0]);
+            if(u) setUser(u);
+            else alert("Login inválido");
+          }}>Entrar</button>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div class="p-6">
+      <h1 class="text-2xl mb-4">Painel Hayes Auto</h1>
+      <p>Bem-vindo {user.name} ({user.role})</p>
+
+      <h2 class="mt-4 text-xl">Stock</h2>
+      {stock.map((s,i)=>(
+        <div key={i}>{s.name} — {s.qty} — €{s.price}</div>
+      ))}
+
+      <h2 class="mt-4 text-xl">Serviços</h2>
+      <button class="bg-green-600 px-4 py-2 mt-2" onClick={()=>{
+        setServices([...services,{date:new Date().toLocaleString()}])
+      }}>Adicionar serviço</button>
+
+      {services.map((s,i)=>(<div key={i}>{s.date}</div>))}
+    </div>
+  )
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App/>)
+</script>
 </body>
 </html>
+
