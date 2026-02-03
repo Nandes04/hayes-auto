@@ -4,49 +4,153 @@
 <meta charset="UTF-8">
 <title>Hayes Auto</title>
 <style>
-body{
-  background:#0f172a;
-  color:white;
-  font-family:Arial;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  height:100vh;
-}
-.box{
-  background:#1e293b;
-  padding:30px;
-  border-radius:12px;
-  width:300px;
-}
-input,button{
-  width:100%;
-  padding:8px;
-  margin-top:10px;
-}
-button{background:#2563eb;color:white;border:none;}
+body{margin:0;background:#0f172a;color:white;font-family:Arial}
+.container{padding:20px}
+.card{background:#1e293b;padding:20px;border-radius:12px;margin-bottom:15px}
+input,select,button{padding:8px;margin-top:6px;width:100%}
+button{background:#2563eb;color:white;border:none;border-radius:6px}
+.row{display:flex;gap:10px}
+.small{max-width:300px}
+.hidden{display:none}
+table{width:100%;margin-top:10px;border-collapse:collapse}
+td,th{border-bottom:1px solid #334155;padding:6px;text-align:left}
 </style>
 </head>
-
 <body>
-<div class="box">
+
+<div id="login" class="card small">
 <h2>Hayes Auto</h2>
-<input id="u" placeholder="Utilizador">
-<input id="p" type="password" placeholder="Senha">
+<input id="lu" placeholder="Utilizador">
+<input id="lp" type="password" placeholder="Senha">
 <button onclick="login()">Entrar</button>
 <p id="msg"></p>
 </div>
 
+<div id="app" class="container hidden">
+
+<h2 id="welcome"></h2>
+
+<div class="row">
+<button onclick="show('services')">Serviços</button>
+<button onclick="show('stock')">Stock</button>
+<button onclick="show('users')">Funcionários</button>
+<button onclick="logout()">Sair</button>
+</div>
+
+<div id="services" class="card">
+<h3>Novo serviço</h3>
+<select id="part"></select>
+<input id="qty" type="number" value="1">
+<button onclick="addService()">Adicionar</button>
+
+<table>
+<thead><tr><th>Peça</th><th>Qtd</th><th>Total €</th><th>Data</th></tr></thead>
+<tbody id="serviceList"></tbody>
+</table>
+</div>
+
+<div id="stock" class="card hidden">
+<h3>Stock</h3>
+<table>
+<thead><tr><th>Peça</th><th>Qtd</th><th>Preço €</th><th>Ações</th></tr></thead>
+<tbody id="stockList"></tbody>
+</table>
+</div>
+
+<div id="users" class="card hidden">
+<h3>Criar funcionário</h3>
+<input id="nu" placeholder="Nome">
+<input id="np" placeholder="Senha">
+<select id="nr">
+<option value="mecanico">Mecânico</option>
+<option value="admin">Admin/Patrão</option>
+</select>
+<button onclick="addUser()">Criar conta</button>
+</div>
+
+</div>
+
 <script>
+let users=[
+ {u:"patrao",p:"1234",r:"admin"},
+ {u:"mecanico",p:"1111",r:"mecanico"}
+];
+
+let stock=[
+ {name:"Travões",qty:20,price:50},
+ {name:"Óleo",qty:30,price:25},
+ {name:"Bateria",qty:10,price:120}
+];
+
+let services=[];
+let current=null;
+
 function login(){
-  const u=document.getElementById("u").value;
-  const p=document.getElementById("p").value;
-  if(u==="patrao" && p==="1234"){
-    document.body.innerHTML="<h1>Bem-vindo à Hayes Auto 🚗</h1>";
-  }else{
-    document.getElementById("msg").innerText="Login inválido";
-  }
+ let f=users.find(x=>x.u===lu.value&&x.p===lp.value);
+ if(!f){msg.innerText="Login inválido";return;}
+ current=f;
+ loginDiv(false);
 }
+
+function loginDiv(show){
+ login.style.display=show?"block":"none";
+ app.classList.toggle("hidden",show);
+ welcome.innerText=`Bem-vindo ${current.u} (${current.r})`;
+ render();
+ if(current.r!=="admin"){
+   document.querySelector('button[onclick="show(\'users\')"]').style.display="none";
+ }
+}
+
+function show(id){
+ ["services","stock","users"].forEach(x=>document.getElementById(x).classList.add("hidden"));
+ document.getElementById(id).classList.remove("hidden");
+}
+
+function render(){
+ part.innerHTML="";
+ stock.forEach((s,i)=>{
+   part.innerHTML+=`<option value="${i}">${s.name}</option>`;
+ });
+
+ stockList.innerHTML="";
+ stock.forEach((s,i)=>{
+   let edit=current.r==="admin"
+   ? `<input type="number" value="${s.qty}" onchange="stock[${i}].qty=this.value">
+      <input type="number" value="${s.price}" onchange="stock[${i}].price=this.value">`
+   : `${s.qty} | €${s.price}`;
+
+   stockList.innerHTML+=`<tr><td>${s.name}</td><td>${edit}</td><td></td><td></td></tr>`;
+ });
+
+ serviceList.innerHTML="";
+ services.forEach(s=>{
+   serviceList.innerHTML+=`<tr><td>${s.name}</td><td>${s.qty}</td><td>€${s.total}</td><td>${s.date}</td></tr>`;
+ });
+}
+
+function addService(){
+ let i=part.value;
+ let q=parseInt(qty.value);
+ if(stock[i].qty<q){alert("Stock insuficiente");return;}
+ stock[i].qty-=q;
+ let total=q*stock[i].price;
+ services.push({
+   name:stock[i].name,
+   qty:q,
+   total:total,
+   date:new Date().toLocaleString()
+ });
+ render();
+}
+
+function addUser(){
+ users.push({u:nu.value,p:np.value,r:nr.value});
+ alert("Conta criada!");
+ nu.value=np.value="";
+}
+
+function logout(){location.reload();}
 </script>
 </body>
 </html>
