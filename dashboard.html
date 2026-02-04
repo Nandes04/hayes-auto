@@ -86,13 +86,11 @@ body{
   color:#9fb0d1;
   margin-bottom:4px;
   text-transform:uppercase;
-  letter-spacing:.6px;
 }
 
 .value{
   font-size:24px;
   font-weight:700;
-  letter-spacing:.5px;
 }
 
 .red{ color:#ef4444; }
@@ -133,12 +131,19 @@ button{
   color:white;
   cursor:pointer;
 }
+
+input, select{
+  width:100%;
+  padding:10px;
+  margin-top:10px;
+  border-radius:6px;
+  border:none;
+}
 </style>
 </head>
 
 <body>
 
-<!-- TOPO -->
 <div class="topbar">
   <div class="logo">Hayes Auto</div>
 
@@ -146,7 +151,7 @@ button{
     <span class="active" onclick="showTab('inicio',this)">INÍCIO</span>
     <span onclick="showTab('servicos',this)">SERVIÇOS</span>
     <span onclick="showTab('stock',this)">STOCK</span>
-    <span onclick="showTab('boss',this)">BOSS</span>
+    <span id="bossTab" onclick="showTab('boss',this)">BOSS</span>
   </div>
 </div>
 
@@ -156,7 +161,6 @@ button{
 
 <!-- INÍCIO -->
 <div id="inicio" class="section active">
-
   <div class="stats-box">
     <div class="stat">
       <h4>Faturação pessoal</h4>
@@ -173,7 +177,6 @@ button{
       <div class="value green">5 400,00 €</div>
     </div>
   </div>
-
 </div>
 
 <!-- SERVIÇOS -->
@@ -194,10 +197,23 @@ button{
 
 <!-- BOSS -->
 <div id="boss" class="section admin-only">
+
   <div class="card">
-    <h2>Gerir funcionários</h2>
-    <p>Criar contas e permissões</p>
+    <h2>Criar novo utilizador</h2>
+
+    <input id="newUser" placeholder="Utilizador">
+    <input id="newPass" type="password" placeholder="Senha">
+
+    <select id="newRole">
+      <option value="mecanico">Funcionário</option>
+      <option value="admin">Patrão</option>
+    </select>
+
+    <button onclick="createUser()">Criar conta</button>
+
+    <p id="msg" style="margin-top:10px;color:#22c55e"></p>
   </div>
+
 </div>
 
 </div>
@@ -213,12 +229,15 @@ if(!role){
 document.getElementById("welcome").innerText =
   "Bem-vindo, " + user + " (" + role + ")";
 
+/* BLOQUEAR BOSS A NÃO ADMINS */
 if(role !== "admin"){
   document.querySelectorAll(".admin-only").forEach(el=>{
     el.classList.add("hidden");
   });
+  document.getElementById("bossTab").style.display="none";
 }
 
+/* TROCAR ABAS */
 function showTab(tab, el){
 
   document.querySelectorAll(".section").forEach(s=>{
@@ -234,6 +253,34 @@ function showTab(tab, el){
   el.classList.add("active");
 }
 
+/* CRIAR UTILIZADOR */
+function createUser(){
+
+  let users = JSON.parse(localStorage.getItem("users")) || [];
+
+  const u = document.getElementById("newUser").value;
+  const p = document.getElementById("newPass").value;
+  const r = document.getElementById("newRole").value;
+
+  if(!u || !p){
+    alert("Preenche tudo");
+    return;
+  }
+
+  if(users.find(x => x.user === u)){
+    alert("Utilizador já existe");
+    return;
+  }
+
+  users.push({ user:u, pass:p, role:r });
+
+  localStorage.setItem("users", JSON.stringify(users));
+
+  document.getElementById("msg").innerText = "Conta criada com sucesso ✅";
+
+  document.getElementById("newUser").value="";
+  document.getElementById("newPass").value="";
+}
 </script>
 
 </body>
