@@ -74,10 +74,14 @@ button:hover{
 </div>
 
 <script>
-const users = [
-  {user:"patrao", pass:"1234", role:"admin"},
-  {user:"joao", pass:"1234", role:"mecanico"}
-];
+let users = JSON.parse(localStorage.getItem("users"));
+
+if(!users){
+  users = [
+    {user:"patrao", pass:"1234", role:"admin"}
+  ];
+  localStorage.setItem("users", JSON.stringify(users));
+}
 
 function login(){
   const u = document.getElementById("user").value;
@@ -96,6 +100,7 @@ function login(){
   window.location.href = "dashboard.html";
 }
 </script>
+
 
 </body>
 </html>
