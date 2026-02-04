@@ -139,6 +139,23 @@ input, select{
   border-radius:6px;
   border:none;
 }
+
+/* BOTÃO SAIR */
+
+.logout-btn{
+  position:fixed;
+  bottom:16px;
+  left:16px;
+  padding:6px 12px;
+  font-size:13px;
+  border-radius:6px;
+  background:#1e40af;
+  opacity:.7;
+}
+
+.logout-btn:hover{
+  opacity:1;
+}
 </style>
 </head>
 
@@ -197,7 +214,6 @@ input, select{
 
 <!-- BOSS -->
 <div id="boss" class="section admin-only">
-
   <div class="card">
     <h2>Criar novo utilizador</h2>
 
@@ -210,13 +226,14 @@ input, select{
     </select>
 
     <button onclick="createUser()">Criar conta</button>
-
     <p id="msg" style="margin-top:10px;color:#22c55e"></p>
   </div>
-
 </div>
 
 </div>
+
+<!-- BOTÃO SAIR -->
+<button class="logout-btn" id="logoutBtn" onclick="logout()"></button>
 
 <script>
 const role = localStorage.getItem("role");
@@ -228,6 +245,9 @@ if(!role){
 
 document.getElementById("welcome").innerText =
   "Bem-vindo, " + user + " (" + role + ")";
+
+document.getElementById("logoutBtn").innerText =
+  "Sair (" + user + ")";
 
 /* BLOQUEAR BOSS A NÃO ADMINS */
 if(role !== "admin"){
@@ -280,6 +300,12 @@ function createUser(){
 
   document.getElementById("newUser").value="";
   document.getElementById("newPass").value="";
+}
+
+/* LOGOUT */
+function logout(){
+  localStorage.clear();
+  window.location.href = "index.html";
 }
 </script>
 
