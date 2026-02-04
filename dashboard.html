@@ -51,6 +51,40 @@ body{
   color:#4f7cff;
 }
 
+/* CAIXA DE ESTATÍSTICAS */
+
+.stats-box{
+  margin:40px auto;
+  max-width:750px;
+  background:linear-gradient(180deg,#0b1220,#020617);
+  border-radius:18px;
+  padding:25px 30px;
+  display:flex;
+  justify-content:space-between;
+  box-shadow:0 15px 40px rgba(0,0,0,.7);
+}
+
+.stat{
+  text-align:center;
+  flex:1;
+}
+
+.stat h4{
+  font-size:13px;
+  color:#94a3b8;
+  margin-bottom:6px;
+  text-transform:uppercase;
+}
+
+.value{
+  font-size:28px;
+  font-weight:bold;
+}
+
+.red{ color:#ef4444; }
+.green{ color:#22c55e; }
+.blue{ color:#60a5fa; }
+
 /* CONTEÚDO */
 
 .container{
@@ -98,6 +132,26 @@ button{
 
 <h1>Hayes Auto - Painel</h1>
 <p id="welcome"></p>
+
+<!-- CAIXA MODERNA (INÍCIO) -->
+<div class="stats-box">
+
+  <div class="stat">
+    <h4>Faturação pessoal</h4>
+    <div class="value red">13 500,00 €</div>
+  </div>
+
+  <div class="stat">
+    <h4>Serviços</h4>
+    <div class="value blue">2</div>
+  </div>
+
+  <div class="stat">
+    <h4>Pagamento (40%)</h4>
+    <div class="value green">5 400,00 €</div>
+  </div>
+
+</div>
 
 <div class="card">
   <h2>Ordens de serviço</h2>
