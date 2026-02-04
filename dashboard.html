@@ -9,11 +9,9 @@ body{
   margin:0;
   background:#0f172a;
   color:white;
-  font-family:Arial, sans-serif;
+  font-family:Arial,sans-serif;
   padding-top:90px;
 }
-
-/* TOPO */
 
 .topbar{
   position:fixed;
@@ -44,7 +42,6 @@ body{
   cursor:pointer;
   font-weight:600;
   color:#cbd5ff;
-  transition:.2s;
 }
 
 .menu span.active,
@@ -52,109 +49,78 @@ body{
   color:#4f7cff;
 }
 
-/* TEXTO BOAS-VINDAS */
+.container{ padding:30px; }
+
+.section{ display:none; }
+.section.active{ display:block; }
 
 #welcome{
   font-size:22px;
   font-weight:600;
-  letter-spacing:.5px;
-  margin-top:-35px;
-  margin-bottom:22px;
-  color:#e5edff;
-}
-
-/* ESTATÍSTICAS */
-
-.stats-box{
-  margin:12px auto;
-  max-width:620px;
-  background:linear-gradient(180deg,#0b1220,#020617);
-  border-radius:16px;
-  padding:18px 22px;
-  display:flex;
-  justify-content:space-between;
-  box-shadow:0 12px 35px rgba(0,0,0,.7);
-}
-
-.stat{
-  text-align:center;
-  flex:1;
-}
-
-.stat h4{
-  font-size:12px;
-  color:#9fb0d1;
-  margin-bottom:4px;
-  text-transform:uppercase;
-}
-
-.value{
-  font-size:24px;
-  font-weight:700;
-}
-
-.red{ color:#ef4444; }
-.green{ color:#22c55e; }
-.blue{ color:#60a5fa; }
-
-/* CONTEÚDO */
-
-.container{
-  padding:30px;
-}
-
-.section{
-  display:none;
-}
-
-.section.active{
-  display:block;
+  margin-bottom:25px;
 }
 
 .card{
   background:#1e293b;
   padding:20px;
-  border-radius:12px;
+  border-radius:14px;
   margin-top:20px;
 }
 
-.hidden{
-  display:none;
-}
-
-button{
-  margin-top:18px;
-  padding:9px 16px;
-  border:none;
-  border-radius:8px;
-  background:#2563eb;
-  color:white;
-  cursor:pointer;
-}
-
-input, select{
+input,select{
   width:100%;
-  padding:10px;
+  padding:8px 10px;
   margin-top:10px;
   border-radius:6px;
   border:none;
+  background:#020617;
+  color:white;
+  font-size:14px;
 }
 
-/* BOTÃO SAIR */
+button{
+  margin-top:14px;
+  padding:7px 14px;
+  border:none;
+  border-radius:7px;
+  background:#2563eb;
+  color:white;
+  cursor:pointer;
+  font-size:14px;
+}
+
+.hidden{ display:none; }
 
 .logout-btn{
   position:fixed;
-  bottom:16px;
-  left:16px;
-  padding:6px 12px;
-  font-size:13px;
+  bottom:14px;
+  left:14px;
+  font-size:12px;
+  padding:6px 10px;
   border-radius:6px;
   background:#1e40af;
-  opacity:.7;
 }
 
-.logout-btn:hover{
-  opacity:1;
+.user-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background:#020617;
+  padding:8px 12px;
+  border-radius:6px;
+  margin-top:8px;
+  font-size:14px;
+}
+
+.user-row span{
+  color:#cbd5ff;
+}
+
+.delete-btn{
+  background:#ef4444;
+  padding:4px 8px;
+  font-size:12px;
+  border-radius:5px;
 }
 </style>
 </head>
@@ -163,7 +129,6 @@ input, select{
 
 <div class="topbar">
   <div class="logo">Hayes Auto</div>
-
   <div class="menu">
     <span class="active" onclick="showTab('inicio',this)">INÍCIO</span>
     <span onclick="showTab('servicos',this)">SERVIÇOS</span>
@@ -176,137 +141,116 @@ input, select{
 
 <p id="welcome"></p>
 
-<!-- INÍCIO -->
 <div id="inicio" class="section active">
-  <div class="stats-box">
-    <div class="stat">
-      <h4>Faturação pessoal</h4>
-      <div class="value red">13 500,00 €</div>
-    </div>
-
-    <div class="stat">
-      <h4>Serviços</h4>
-      <div class="value blue">2</div>
-    </div>
-
-    <div class="stat">
-      <h4>Pagamento (40%)</h4>
-      <div class="value green">5 400,00 €</div>
-    </div>
-  </div>
+  <div class="card">Painel principal</div>
 </div>
 
-<!-- SERVIÇOS -->
 <div id="servicos" class="section">
-  <div class="card">
-    <h2>Ordens de serviço</h2>
-    <p>Aqui vais gerir os carros e trabalhos</p>
-  </div>
+  <div class="card">Gestão de serviços</div>
 </div>
 
-<!-- STOCK -->
 <div id="stock" class="section">
-  <div class="card admin-only">
-    <h2>Stock de peças</h2>
-    <p>Gerir quantidades e preços</p>
-  </div>
+  <div class="card admin-only">Gestão de stock</div>
 </div>
 
-<!-- BOSS -->
 <div id="boss" class="section admin-only">
-  <div class="card">
-    <h2>Criar novo utilizador</h2>
 
-    <input id="newUser" placeholder="Utilizador">
-    <input id="newPass" type="password" placeholder="Senha">
+<div class="card">
+<h2>Criar novo utilizador</h2>
 
-    <select id="newRole">
-      <option value="mecanico">Funcionário</option>
-      <option value="admin">Patrão</option>
-    </select>
+<input id="newUser" placeholder="Utilizador">
+<input id="newPass" type="password" placeholder="Senha">
 
-    <button onclick="createUser()">Criar conta</button>
-    <p id="msg" style="margin-top:10px;color:#22c55e"></p>
-  </div>
+<select id="newRole">
+  <option value="mecanico">Funcionário</option>
+  <option value="admin">Patrão</option>
+</select>
+
+<button onclick="createUser()">Criar conta</button>
+
+<p id="msg" style="margin-top:8px;color:#22c55e"></p>
+
+<h3 style="margin-top:20px">Contas criadas</h3>
+<div id="userList"></div>
+
+</div>
 </div>
 
 </div>
 
-<!-- BOTÃO SAIR -->
-<button class="logout-btn" id="logoutBtn" onclick="logout()"></button>
+<button class="logout-btn" onclick="logout()">Sair</button>
 
 <script>
 const role = localStorage.getItem("role");
 const user = localStorage.getItem("user");
 
-if(!role){
-  window.location.href = "index.html";
-}
+if(!role) location.href="index.html";
 
 document.getElementById("welcome").innerText =
-  "Bem-vindo, " + user + " (" + role + ")";
+ "Bem-vindo, "+user+" ("+role+")";
 
-document.getElementById("logoutBtn").innerText =
-  "Sair (" + user + ")";
-
-/* BLOQUEAR BOSS A NÃO ADMINS */
-if(role !== "admin"){
-  document.querySelectorAll(".admin-only").forEach(el=>{
-    el.classList.add("hidden");
-  });
-  document.getElementById("bossTab").style.display="none";
+if(role!=="admin"){
+ document.querySelectorAll(".admin-only").forEach(e=>e.classList.add("hidden"));
+ document.getElementById("bossTab").style.display="none";
 }
 
-/* TROCAR ABAS */
-function showTab(tab, el){
-
-  document.querySelectorAll(".section").forEach(s=>{
-    s.classList.remove("active");
-  });
-
-  document.getElementById(tab).classList.add("active");
-
-  document.querySelectorAll(".menu span").forEach(m=>{
-    m.classList.remove("active");
-  });
-
-  el.classList.add("active");
+function showTab(tab,el){
+ document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+ document.getElementById(tab).classList.add("active");
+ document.querySelectorAll(".menu span").forEach(m=>m.classList.remove("active"));
+ el.classList.add("active");
 }
 
-/* CRIAR UTILIZADOR */
 function createUser(){
+ let users=JSON.parse(localStorage.getItem("users"))||[];
 
-  let users = JSON.parse(localStorage.getItem("users")) || [];
+ const u=newUser.value;
+ const p=newPass.value;
+ const r=newRole.value;
 
-  const u = document.getElementById("newUser").value;
-  const p = document.getElementById("newPass").value;
-  const r = document.getElementById("newRole").value;
+ if(!u||!p) return alert("Preenche tudo");
 
-  if(!u || !p){
-    alert("Preenche tudo");
-    return;
-  }
+ if(users.find(x=>x.user===u)) return alert("Já existe");
 
-  if(users.find(x => x.user === u)){
-    alert("Utilizador já existe");
-    return;
-  }
+ users.push({user:u,pass:p,role:r});
+ localStorage.setItem("users",JSON.stringify(users));
 
-  users.push({ user:u, pass:p, role:r });
+ newUser.value="";
+ newPass.value="";
+ msg.innerText="Conta criada com sucesso ✅";
 
-  localStorage.setItem("users", JSON.stringify(users));
-
-  document.getElementById("msg").innerText = "Conta criada com sucesso ✅";
-
-  document.getElementById("newUser").value="";
-  document.getElementById("newPass").value="";
+ loadUsers();
 }
 
-/* LOGOUT */
+function loadUsers(){
+ let users=JSON.parse(localStorage.getItem("users"))||[];
+ const list=document.getElementById("userList");
+ list.innerHTML="";
+
+ users.forEach((u,i)=>{
+   const row=document.createElement("div");
+   row.className="user-row";
+   row.innerHTML=`
+     <span>${u.user} — ${u.role}</span>
+     <button class="delete-btn" onclick="deleteUser(${i})">Apagar</button>
+   `;
+   list.appendChild(row);
+ });
+}
+
+function deleteUser(index){
+ let users=JSON.parse(localStorage.getItem("users"))||[];
+ users.splice(index,1);
+ localStorage.setItem("users",JSON.stringify(users));
+ loadUsers();
+}
+
 function logout(){
-  localStorage.clear();
-  window.location.href = "index.html";
+ localStorage.clear();
+ location.href="index.html";
 }
+
+loadUsers();
 </script>
 
 </body>
