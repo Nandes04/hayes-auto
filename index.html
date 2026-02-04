@@ -70,22 +70,25 @@ button{
 
 <script>
 
-/* GARANTE QUE EXISTE PELO MENOS UM ADMIN */
-let users = JSON.parse(localStorage.getItem("users")) || [];
+function getUsers(){
+  return JSON.parse(localStorage.getItem("users")) || [];
+}
+
+/* CRIA ADMIN SE NÃO EXISTIR */
+let users = getUsers();
 
 if(users.length === 0){
   users.push({ user:"patrao", pass:"1234", role:"admin" });
   localStorage.setItem("users", JSON.stringify(users));
 }
 
-/* LOGIN REAL */
 function login(){
 
-  const u = document.getElementById("user").value;
-  const p = document.getElementById("pass").value;
+  const u = user.value.trim();
+  const p = pass.value.trim();
 
-  const found = users.find(acc => 
-    acc.user === u && acc.pass === p
+  const found = getUsers().find(x => 
+    x.user === u && x.pass === p
   );
 
   if(!found){
@@ -100,6 +103,7 @@ function login(){
 }
 
 </script>
+
 
 </body>
 </html>
