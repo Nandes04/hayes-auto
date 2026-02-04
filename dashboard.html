@@ -181,77 +181,121 @@ button{
 <button class="logout-btn" onclick="logout()">Sair</button>
 
 <script>
+
 const role = localStorage.getItem("role");
 const user = localStorage.getItem("user");
 
 if(!role) location.href="index.html";
 
-document.getElementById("welcome").innerText =
- "Bem-vindo, "+user+" ("+role+")";
+welcome.innerText = "Bem-vindo, " + user + " (" + role + ")";
 
-if(role!=="admin"){
- document.querySelectorAll(".admin-only").forEach(e=>e.classList.add("hidden"));
- document.getElementById("bossTab").style.display="none";
+/* BLOQUEIO ADMIN */
+
+if(role !== "admin"){
+  document.querySelectorAll(".admin-only").forEach(e=>{
+    e.classList.add("hidden");
+  });
+  bossTab.style.display = "none";
 }
+
+/* UTILIDADES */
+
+function getUsers(){
+  return JSON.parse(localStorage.getItem("users")) || [];
+}
+
+function saveUsers(users){
+  localStorage.setItem("users", JSON.stringify(users));
+}
+
+/* ABAS */
 
 function showTab(tab,el){
- document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
- document.getElementById(tab).classList.add("active");
- document.querySelectorAll(".menu span").forEach(m=>m.classList.remove("active"));
- el.classList.add("active");
+  document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+  document.getElementById(tab).classList.add("active");
+
+  document.querySelectorAll(".menu span").forEach(m=>m.classList.remove("active"));
+  el.classList.add("active");
 }
+
+/* CRIAR CONTA */
 
 function createUser(){
- let users=JSON.parse(localStorage.getItem("users"))||[];
 
- const u=newUser.value;
- const p=newPass.value;
- const r=newRole.value;
+  const u = newUser.value.trim();
+  const p = newPass.value.trim();
+  const r = newRole.value;
 
- if(!u||!p) return alert("Preenche tudo");
+  if(!u || !p){
+    alert("Preenche tudo");
+    return;
+  }
 
- if(users.find(x=>x.user===u)) return alert("Já existe");
+  let users = getUsers();
 
- users.push({user:u,pass:p,role:r});
- localStorage.setItem("users",JSON.stringify(users));
+  if(users.some(x => x.user === u)){
+    alert("Utilizador já existe");
+    return;
+  }
 
- newUser.value="";
- newPass.value="";
- msg.innerText="Conta criada com sucesso ✅";
+  users.push({ user:u, pass:p, role:r });
 
- loadUsers();
+  saveUsers(users);
+
+  newUser.value = "";
+  newPass.value = "";
+
+  msg.innerText = "Conta criada com sucesso ✅";
+
+  renderUsers();
 }
 
-function loadUsers(){
- let users=JSON.parse(localStorage.getItem("users"))||[];
- const list=document.getElementById("userList");
- list.innerHTML="";
+/* LISTAR CONTAS */
 
- users.forEach((u,i)=>{
-   const row=document.createElement("div");
-   row.className="user-row";
-   row.innerHTML=`
-     <span>${u.user} — ${u.role}</span>
-     <button class="delete-btn" onclick="deleteUser(${i})">Apagar</button>
-   `;
-   list.appendChild(row);
- });
+function renderUsers(){
+
+  const list = userList;
+  list.innerHTML = "";
+
+  getUsers().forEach((u,i)=>{
+
+    const row = document.createElement("div");
+    row.className = "user-row";
+
+    row.innerHTML = `
+      <span>${u.user} — ${u.role}</span>
+      <button class="delete-btn" onclick="deleteUser(${i})">Apagar</button>
+    `;
+
+    list.appendChild(row);
+  });
 }
 
-function deleteUser(index){
- let users=JSON.parse(localStorage.getItem("users"))||[];
- users.splice(index,1);
- localStorage.setItem("users",JSON.stringify(users));
- loadUsers();
+/* APAGAR CONTA */
+
+function deleteUser(i){
+
+  let users = getUsers();
+  users.splice(i,1);
+  saveUsers(users);
+
+  renderUsers();
 }
+
+/* LOGOUT */
 
 function logout(){
- localStorage.clear();
- location.href="index.html";
+  localStorage.removeItem("role");
+  localStorage.removeItem("user");
+  location.href="index.html";
 }
 
-loadUsers();
+/* CARREGAR AO ABRIR */
+
+renderUsers();
+
 </script>
+
 
 </body>
 </html>
