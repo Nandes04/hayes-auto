@@ -247,46 +247,29 @@ button:hover{
   </div>
 </div>
 
-<div class="container">
-
-<p id="welcome"></p>
-
 <div id="inicio" class="section active">
-  <div class="card">Painel principal</div>
-</div>
 
-<div id="servicos" class="section">
-  <div class="card">Gestão de serviços</div>
-</div>
+  <div class="stats-box">
 
-<div id="stock" class="section">
-  <div class="card admin-only">Gestão de stock</div>
-</div>
+    <div class="stat">
+      <h4>Faturação pessoal</h4>
+      <div class="value green">13 500,00 €</div>
+    </div>
 
-<div id="boss" class="section admin-only">
+    <div class="stat">
+      <h4>Serviços</h4>
+      <div class="value">2</div>
+    </div>
 
-<div class="card">
-<h2>Criar novo utilizador</h2>
+    <div class="stat">
+      <h4>Pagamento (40%)</h4>
+      <div class="value blue">5 400,00 €</div>
+    </div>
 
-<input id="newUser" placeholder="Utilizador">
-<input id="newPass" type="password" placeholder="Senha">
-
-<select id="newRole">
-  <option value="mecanico">Funcionário</option>
-  <option value="admin">Patrão</option>
-</select>
-
-<button onclick="createUser()">Criar conta</button>
-
-<p id="msg" style="margin-top:8px;color:#22c55e"></p>
-
-<h3 style="margin-top:20px">Contas criadas</h3>
-<div id="userList"></div>
+  </div>
 
 </div>
-</div>
 
-</div>
 
 <button class="logout-btn" onclick="logout()">Sair</button>
 
