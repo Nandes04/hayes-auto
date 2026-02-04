@@ -12,43 +12,6 @@ body{
   font-family:Arial,sans-serif;
   padding-top:90px;
 }
-/* ESTATÍSTICAS INÍCIO */
-
-.stats-box{
-  margin: 5px auto 35px;
-  max-width:700px;
-  background:linear-gradient(180deg,#0b1220,#020617);
-  border-radius:20px;
-  padding:20px 26px;
-  display:flex;
-  justify-content:space-between;
-  box-shadow:
-    inset 0 0 0 1px rgba(255,255,255,.04),
-    0 20px 45px rgba(0,0,0,.85);
-}
-
-.stat{
-  text-align:center;
-  flex:1;
-}
-
-.stat h4{
-  font-size:12px;
-  color:#9fb0d1;
-  margin-bottom:6px;
-  text-transform:uppercase;
-  letter-spacing:.8px;
-}
-
-.value{
-  font-size:26px;
-  font-weight:800;
-}
-
-/* CORES TROCADAS */
-
-.green{ color:#60a5fa; } /* agora azul */
-.blue{ color:#22c55e; }  /* agora verde */
 
 /* TOPO */
 
@@ -71,7 +34,6 @@ body{
   left:30px;
   font-size:22px;
   font-weight:700;
-  letter-spacing:.5px;
 }
 
 .menu{
@@ -83,7 +45,6 @@ body{
   cursor:pointer;
   font-weight:600;
   color:#9fb0ff;
-  transition:.25s;
 }
 
 .menu span.active,
@@ -101,10 +62,39 @@ body{
 
 #welcome{
   font-size:22px;
-  font-weight:600;
   margin-bottom:25px;
-  color:#e5edff;
 }
+
+/* ESTATÍSTICAS */
+
+.stats-box{
+  margin:auto;
+  max-width:700px;
+  background:linear-gradient(180deg,#0b1220,#020617);
+  border-radius:20px;
+  padding:20px 26px;
+  display:flex;
+  justify-content:space-between;
+  box-shadow:0 20px 45px rgba(0,0,0,.85);
+}
+
+.stat{
+  text-align:center;
+  flex:1;
+}
+
+.stat h4{
+  font-size:12px;
+  color:#9fb0d1;
+}
+
+.value{
+  font-size:26px;
+  font-weight:800;
+}
+
+.green{ color:#60a5fa; }
+.blue{ color:#22c55e; }
 
 /* CARTÕES */
 
@@ -113,104 +103,42 @@ body{
   padding:24px;
   border-radius:18px;
   margin-top:22px;
-  box-shadow:
-    inset 0 0 0 1px rgba(255,255,255,.03),
-    0 18px 45px rgba(0,0,0,.7);
-  .card input,
-.card select{
-  display:block;
+  box-shadow:0 18px 45px rgba(0,0,0,.7);
 }
 
-}
-
-/* INPUTS ESCUROS */
+/* INPUTS */
 
 input, select{
   width:260px;
   padding:9px 12px;
   margin-top:12px;
   border-radius:10px;
+  background:#020617;
+  color:white;
   border:1px solid rgba(255,255,255,.08);
-  background:#020617;
-  color:#e5edff;
-  font-size:14px;
-  outline:none;
-  transition:.2s;
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.03);
 }
-
-/* texto dentro */
-input::placeholder{
-  color:#7c88b8;
-}
-
-/* foco bonito */
-input:focus, select:focus{
-  border-color:#4f7cff;
-  box-shadow:0 0 0 2px rgba(79,124,255,.25);
-}
-
-/* opções do select (corrige branco feio) */
-select option{
-  background:#020617;
-  color:#e5edff;
-}
-
-/* quando está aberto (alguns browsers) */
-select{
-  appearance:none;
-}
-
-
 
 /* BOTÕES */
 
 button{
   margin-top:16px;
   padding:9px 16px;
-  border:none;
   border-radius:10px;
-  background:linear-gradient(180deg,#3b82f6,#2563eb);
+  background:#2563eb;
   color:white;
+  border:none;
   cursor:pointer;
-  font-weight:600;
-  transition:.2s;
 }
 
-button:hover{
-  transform:translateY(-1px);
-  box-shadow:0 8px 18px rgba(37,99,235,.5);
-}
-
-/* LISTA DE CONTAS */
+/* LISTA */
 
 .user-row{
   display:flex;
   justify-content:space-between;
-  align-items:center;
-  background:linear-gradient(180deg,#020617,#020617cc);
-  padding:12px 14px;
+  background:#020617;
+  padding:12px;
   border-radius:12px;
   margin-top:10px;
-  box-shadow:inset 0 0 0 1px rgba(255,255,255,.04);
-}
-
-.user-row span{
-  color:#cbd5ff;
-  font-size:14px;
-}
-
-/* APAGAR */
-
-.delete-btn{
-  background:linear-gradient(180deg,#ef4444,#dc2626);
-  padding:6px 12px;
-  font-size:12px;
-  border-radius:8px;
-}
-
-.delete-btn:hover{
-  box-shadow:0 6px 16px rgba(239,68,68,.5);
 }
 
 /* LOGOUT */
@@ -222,8 +150,7 @@ button:hover{
   font-size:12px;
   padding:7px 12px;
   border-radius:10px;
-  background:linear-gradient(180deg,#1e40af,#1e3a8a);
-  box-shadow:0 8px 20px rgba(0,0,0,.7);
+  background:#1e40af;
 }
 
 /* SISTEMA */
@@ -232,7 +159,6 @@ button:hover{
 .section.active{ display:block; }
 .hidden{ display:none; }
 </style>
-
 </head>
 
 <body>
@@ -247,10 +173,14 @@ button:hover{
   </div>
 </div>
 
+<div class="container">
+
+<p id="welcome"></p>
+
+<!-- INICIO -->
 <div id="inicio" class="section active">
 
   <div class="stats-box">
-
     <div class="stat">
       <h4>Faturação pessoal</h4>
       <div class="value green">13 500,00 €</div>
@@ -265,130 +195,110 @@ button:hover{
       <h4>Pagamento (40%)</h4>
       <div class="value blue">5 400,00 €</div>
     </div>
-
   </div>
 
 </div>
 
+<!-- SERVICOS -->
+<div id="servicos" class="section">
+  <div class="card">Gestão de serviços</div>
+</div>
+
+<!-- STOCK -->
+<div id="stock" class="section admin-only">
+  <div class="card">Gestão de stock</div>
+</div>
+
+<!-- BOSS -->
+<div id="boss" class="section admin-only">
+
+<div class="card">
+<h2>Criar utilizador</h2>
+
+<input id="newUser" placeholder="Utilizador">
+<input id="newPass" type="password" placeholder="Senha">
+
+<select id="newRole">
+  <option value="mecanico">Funcionário</option>
+  <option value="admin">Patrão</option>
+</select>
+
+<button onclick="createUser()">Criar conta</button>
+
+<h3 style="margin-top:20px">Contas</h3>
+<div id="userList"></div>
+
+</div>
+</div>
+
+</div>
 
 <button class="logout-btn" onclick="logout()">Sair</button>
 
 <script>
-
 const role = localStorage.getItem("role");
 const user = localStorage.getItem("user");
 
 if(!role) location.href="index.html";
 
-welcome.innerText = "Bem-vindo, " + user + " (" + role + ")";
-
-/* BLOQUEIO ADMIN */
+welcome.innerText = `Bem-vindo, ${user} (${role})`;
 
 if(role !== "admin"){
-  document.querySelectorAll(".admin-only").forEach(e=>{
-    e.classList.add("hidden");
-  });
-  bossTab.style.display = "none";
+  document.querySelectorAll(".admin-only").forEach(e=>e.classList.add("hidden"));
+  bossTab.style.display="none";
 }
 
-/* UTILIDADES */
+function showTab(tab,el){
+  document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+  document.getElementById(tab).classList.add("active");
+  document.querySelectorAll(".menu span").forEach(m=>m.classList.remove("active"));
+  el.classList.add("active");
+}
 
 function getUsers(){
   return JSON.parse(localStorage.getItem("users")) || [];
 }
 
-function saveUsers(users){
-  localStorage.setItem("users", JSON.stringify(users));
+function saveUsers(u){
+  localStorage.setItem("users",JSON.stringify(u));
 }
-
-/* ABAS */
-
-function showTab(tab,el){
-  document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
-  document.getElementById(tab).classList.add("active");
-
-  document.querySelectorAll(".menu span").forEach(m=>m.classList.remove("active"));
-  el.classList.add("active");
-}
-
-/* CRIAR CONTA */
 
 function createUser(){
-
-  const u = newUser.value.trim();
-  const p = newPass.value.trim();
-  const r = newRole.value;
-
-  if(!u || !p){
-    alert("Preenche tudo");
-    return;
-  }
-
   let users = getUsers();
-
-  if(users.some(x => x.user === u)){
-    alert("Utilizador já existe");
-    return;
-  }
-
-  users.push({ user:u, pass:p, role:r });
-
+  users.push({
+    user:newUser.value,
+    pass:newPass.value,
+    role:newRole.value
+  });
   saveUsers(users);
-
-  newUser.value = "";
-  newPass.value = "";
-
-  msg.innerText = "Conta criada com sucesso ✅";
-
   renderUsers();
 }
 
-/* LISTAR CONTAS */
-
 function renderUsers(){
-
-  const list = userList;
-  list.innerHTML = "";
-
+  userList.innerHTML="";
   getUsers().forEach((u,i)=>{
-
-    const row = document.createElement("div");
-    row.className = "user-row";
-
-    row.innerHTML = `
-      <span>${u.user} — ${u.role}</span>
-      <button class="delete-btn" onclick="deleteUser(${i})">Apagar</button>
-    `;
-
-    list.appendChild(row);
+    userList.innerHTML += `
+      <div class="user-row">
+        ${u.user} — ${u.role}
+        <button onclick="deleteUser(${i})">Apagar</button>
+      </div>`;
   });
 }
 
-/* APAGAR CONTA */
-
 function deleteUser(i){
-
   let users = getUsers();
   users.splice(i,1);
   saveUsers(users);
-
   renderUsers();
 }
 
-/* LOGOUT */
-
 function logout(){
-  localStorage.removeItem("role");
-  localStorage.removeItem("user");
+  localStorage.clear();
   location.href="index.html";
 }
 
-/* CARREGAR AO ABRIR */
-
 renderUsers();
-
 </script>
-
 
 </body>
 </html>
