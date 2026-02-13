@@ -96,24 +96,25 @@ if(users.length === 0){
   localStorage.setItem("users", JSON.stringify(users));
 }
 
-function login(){
+function login() {
+    const u = user.value.trim();
+    const p = pass.value.trim();
 
-  const u = user.value.trim();
-  const p = pass.value.trim();
-
-  const found = getUsers().find(x => 
-    x.user === u && x.pass === p
-  );
-
-  if(!found){
-    alert("Login inválido ❌");
-    return;
-  }
-
-  localStorage.setItem("user", found.user);
-  localStorage.setItem("role", found.role);
-
-  window.location.href = "dashboard.html";
+    auth.signInWithEmailAndPassword(u + "@hayesauto.com", p)
+    .then((cred)=>{
+        // Pegar role
+        db.collection("users").doc(cred.user.uid).get()
+        .then(doc=>{
+            if(doc.exists){
+                localStorage.setItem("role", doc.data().role);
+                localStorage.setItem("user", u);
+                window.location.href = "dashboard.html";
+            }
+        });
+    })
+    .catch(err=>{
+        alert("Login inválido ❌ " + err.message);
+    });
 }
 
 </script>
