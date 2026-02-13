@@ -100,6 +100,33 @@ nav a:hover{
   <h3 style="margin-top:40px;">Utilizadores Existentes</h3>
   <div id="userList"></div>
 </div>
+ 
+<script>
+
+/* PROTEÇÃO */
+if(!localStorage.getItem("user")){
+    window.location.href = "index.html";
+}
+
+/* ESCONDER BOSS SE NÃO FOR ADMIN */
+if(localStorage.getItem("role") !== "admin"){
+    document.getElementById("bossTab").style.display = "none";
+}
+
+/* TROCA DE ABAS */
+function showTab(tabId){
+    document.querySelectorAll(".tab").forEach(tab=>{
+        tab.classList.remove("active");
+    });
+    document.getElementById(tabId).classList.add("active");
+}
+
+/* LOGOUT */
+function logout(){
+    localStorage.removeItem("user");
+    localStorage.removeItem("role");
+    window.location.href = "index.html";
+}
 
     /* CRIAR UTILIZADOR */
 function createUser(){
@@ -164,34 +191,6 @@ function deleteUser(username){
 
 /* Carregar lista quando abrir */
 renderUsers();
-
-
-<script>
-
-/* PROTEÇÃO */
-if(!localStorage.getItem("user")){
-    window.location.href = "index.html";
-}
-
-/* ESCONDER BOSS SE NÃO FOR ADMIN */
-if(localStorage.getItem("role") !== "admin"){
-    document.getElementById("bossTab").style.display = "none";
-}
-
-/* TROCA DE ABAS */
-function showTab(tabId){
-    document.querySelectorAll(".tab").forEach(tab=>{
-        tab.classList.remove("active");
-    });
-    document.getElementById(tabId).classList.add("active");
-}
-
-/* LOGOUT */
-function logout(){
-    localStorage.removeItem("user");
-    localStorage.removeItem("role");
-    window.location.href = "index.html";
-}
 
 </script>
 
