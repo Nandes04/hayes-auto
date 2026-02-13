@@ -49,20 +49,53 @@ button{
     cursor:pointer;
 }
 </style>
-</head>
 
-<body>
-<div class="login-box">
-    <h2 style="color:white;">Hayes Auto</h2>
-    <input id="user" placeholder="Utilizador">
-    <input id="pass" type="password" placeholder="Senha">
-    <button onclick="login()">Entrar</button>
-</div>
+<!-- Firebase Modular SDK -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
-<script>
-const USERS_JSON_URL = "https://gist.githubusercontent.com/Nandes04/a3a5e179305d5764ad9a563415a60d2f/raw/6fd2ee38523b441a323aff965829d463177d1d73/users.json";
+// Configuração Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyAOOQ4B0raow-AZ73zWqm9EWtowGNvhFCQ",
+  authDomain: "hayes-auto.firebaseapp.com",
+  projectId: "hayes-auto",
+  storageBucket: "hayes-auto.appspot.com",
+  messagingSenderId: "630755395669",
+  appId: "1:630755395669:web:087effd137517dd04e2cdc",
+  measurementId: "G-5WX19ZBVZG"
+};
 
-window.login = async function() {
+// Inicializar Firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// Cria automaticamente conta "patrao" se não existir
+async function ensureAdmin() {
+    const email = "patrao@hayesauto.com";
+    const pass = "1234";
+
+    try {
+        const cred = await createUserWithEmailAndPassword(auth, email, pass);
+        await setDoc(doc(db, "users", cred.user.uid), {
+            username: "patrao",
+            role: "admin"
+        });
+        console.log("Conta patrao criada ✅");
+    } catch(err){
+        if(err.code === "auth/email-already-in-use"){
+            console.log("Conta patrao já existe ✅");
+        } else {
+            console.error(err.message);
+        }
+    }
+}
+
+ensureAdmin();
+
+window.login = async function(){
     const u = document.getElementById("user").value.trim();
     const p = document.getElementById("pass").value.trim();
 
@@ -71,26 +104,29 @@ window.login = async function() {
         return;
     }
 
-    try {
-        // Busca lista de utilizadores online
-        const res = await fetch(USERS_JSON_URL);
-        const users = await res.json();
+    try{
+        const cred = await signInWithEmailAndPassword(auth, u + "@hayesauto.com", p);
+        const docRef = doc(db, "users", cred.user.uid);
+        const docSnap = await getDoc(docRef);
 
-        const found = users.find(x => x.user === u && x.pass === p);
-        if(!found){
-            alert("Login inválido ❌");
-            return;
+        if(docSnap.exists()){
+            localStorage.setItem("user", u);
+            localStorage.setItem("role", docSnap.data().role);
+            window.location.href = "dashboard.html";
+        } else {
+            alert("Erro: Não foi possível ler role do utilizador ❌");
         }
-
-        localStorage.setItem("user", found.user);
-        localStorage.setItem("role", found.role);
-        window.location.href = "dashboard.html";
-
     } catch(err){
-        alert("Erro ao carregar utilizadores ❌ " + err.message);
+        alert("Login inválido ❌ " + err.message);
     }
 }
 </script>
+</head>
 
-</body>
-</html>
+<body>
+<div class="login-box">
+    <h2 style="color:white;">Hayes Auto</h2>
+    <input id="user" placeholder="Utilizador">
+    <input id="pass" type="password" placeholder="Senha">
+    <button onclick="login()">Entrar</button>
+</
