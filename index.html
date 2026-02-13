@@ -1,119 +1,51 @@
-<!DOCTYPE html>
-<html lang="pt-PT">
-<head>
-<meta charset="UTF-8">
-<title>Hayes Auto - Login</title>
-<style>
-body{
-    margin:0;
-    height:100vh;
-    background-image:url("capa.png");
-    background-size:cover;
-    background-position:center;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    font-family: Arial, sans-serif;
-}
-.login-box{
-    backdrop-filter: blur(10px);
-    background: rgba(0,0,0,0.6);
-    padding:35px;
-    border-radius:15px;
-    width:280px;
-    text-align:center;
-    box-shadow:0 0 30px rgba(0,0,0,.8);
-}
-input{
-    width:100%;
-    padding:12px;
-    margin-top:12px;
-    border:none;
-    border-radius:6px;
-    background:#000;
-    color:white;
-}
-button{
-    width:100%;
-    margin-top:18px;
-    padding:12px;
-    border:none;
-    border-radius:6px;
-    background:#2563eb;
-    color:white;
-    font-weight:bold;
-    cursor:pointer;
-}
-</style>
+import { useState } from "react";
 
-<!-- Firebase SDK -->
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
-import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+const Index = () => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
 
-// Configuração Firebase
-const firebaseConfig = {
-  apiKey: "AIzaSyAOOQ4B0raow-AZ73zWqm9EWtowGNvhFCQ",
-  authDomain: "hayes-auto.firebaseapp.com",
-  projectId: "hayes-auto",
-  storageBucket: "hayes-auto.appspot.com",
-  messagingSenderId: "630755395669",
-  appId: "1:630755395669:web:087effd137517dd04e2cdc",
-  measurementId: "G-5WX19ZBVZG"
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Login logic will be added later
+    console.log("Login attempt:", username);
+  };
+
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-background">
+      <div className="w-full max-w-md rounded-xl border border-border bg-card p-10 shadow-2xl">
+        {/* Logo */}
+        <div className="mb-8 text-center">
+          <h1 className="text-5xl font-extrabold italic text-primary tracking-tight">
+            Hayes
+          </h1>
+        </div>
+
+        {/* Login Form */}
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <input
+            type="text"
+            placeholder="Utilizador"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            className="w-full rounded-lg border border-border bg-input px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+          />
+          <input
+            type="password"
+            placeholder="Senha"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full rounded-lg border border-border bg-input px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+          />
+          <button
+            type="submit"
+            className="w-full rounded-lg bg-primary py-3 text-sm font-bold uppercase tracking-wider text-primary-foreground transition-all hover:brightness-110 active:scale-[0.98]"
+          >
+            Entrar no Sistema
+          </button>
+        </form>
+      </div>
+    </div>
+  );
 };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-
-// Cria automaticamente a conta admin
-async function ensureAdmin() {
-    const email = "patrao@hayesauto.com";
-    const pass = "1234";
-    try {
-        const cred = await createUserWithEmailAndPassword(auth, email, pass);
-        await setDoc(doc(db, "users", cred.user.uid), {username:"patrao", role:"admin"});
-        console.log("Conta patrao criada ✅");
-    } catch(err){
-        if(err.code === "auth/email-already-in-use"){
-            console.log("Conta patrao já existe ✅");
-        } else {
-            console.error(err.message);
-        }
-    }
-}
-ensureAdmin();
-
-// Login
-window.login = async function(){
-    const u = document.getElementById("user").value.trim();
-    const p = document.getElementById("pass").value.trim();
-    if(!u || !p){ alert("Preenche todos os campos ❌"); return; }
-
-    try{
-        const cred = await signInWithEmailAndPassword(auth, u+"@hayesauto.com", p);
-        const docSnap = await getDoc(doc(db, "users", cred.user.uid));
-        if(docSnap.exists()){
-            localStorage.setItem("user", u);
-            localStorage.setItem("role", docSnap.data().role);
-            window.location.href = "dashboard.html";
-        } else {
-            alert("Erro ao obter role do utilizador ❌");
-        }
-    } catch(err){
-        alert("Login inválido ❌ " + err.message);
-    }
-}
-</script>
-</head>
-
-<body>
-<div class="login-box">
-    <h2 style="color:white;">Hayes Auto</h2>
-    <input id="user" placeholder="Utilizador">
-    <input id="pass" type="password" placeholder="Senha">
-    <button onclick="login()">Entrar</button>
-</div>
-</body>
-</html>
+export default Index;
