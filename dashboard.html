@@ -53,6 +53,25 @@ nav a:hover{
     border-radius:6px;
     cursor:pointer;
 }
+
+/* UTILIZADORES */
+.user-item{
+    margin:8px 0; 
+    background:#222; 
+    padding:10px; 
+    border-radius:6px;
+    display:flex; 
+    justify-content:space-between; 
+    align-items:center;
+}
+.user-item button{
+    background:red;
+    border:none;
+    color:white;
+    padding:5px 10px;
+    border-radius:5px;
+    cursor:pointer;
+}
 </style>
 </head>
 
@@ -101,13 +120,12 @@ nav a:hover{
   <div id="userList"></div>
 </div>
 
-<!-- Firebase Modular SDK -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
-import { getFirestore, doc, setDoc, getDocs, collection, getDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+import { getFirestore, doc, setDoc, collection, getDocs, deleteDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
-// Configuração Firebase
+// Config Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyAOOQ4B0raow-AZ73zWqm9EWtowGNvhFCQ",
   authDomain: "hayes-auto.firebaseapp.com",
@@ -118,7 +136,6 @@ const firebaseConfig = {
   measurementId: "G-5WX19ZBVZG"
 };
 
-// Inicializar Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
@@ -142,10 +159,10 @@ function showTab(tabId){
 }
 
 /* LOGOUT */
-function logout(){
+async function logout(){
     localStorage.removeItem("user");
     localStorage.removeItem("role");
-    signOut(auth); // Firebase logout
+    await signOut(auth);
     window.location.href = "index.html";
 }
 
@@ -155,15 +172,18 @@ window.createUser = async function() {
     const pass = document.getElementById("newPass").value.trim();
     const role = document.getElementById("newRole").value;
 
+    if(localStorage.getItem("role") !== "admin"){
+        alert("Não tens permissão ❌");
+        return;
+    }
+
     if(!user || !pass){
         alert("Preenche todos os campos ❌");
         return;
     }
 
     try {
-        // Firebase Auth precisa de email
         const cred = await createUserWithEmailAndPassword(auth, user + "@hayesauto.com", pass);
-        // Guardar role no Firestore
         await setDoc(doc(db, "users", cred.user.uid), {
             username: user,
             role: role
@@ -184,17 +204,29 @@ window.renderUsers = async function() {
     const querySnapshot = await getDocs(collection(db, "users"));
     querySnapshot.forEach(docu => {
         const u = docu.data();
+        const uid = docu.id;
         container.innerHTML += `
-            <div style="margin:8px 0; background:#222; padding:10px; border-radius:6px;">
-                ${u.username} (${u.role})
+            <div class="user-item">
+                <span>${u.username} (${u.role})</span>
+                <button onclick="deleteUser('${uid}')">Apagar</button>
             </div>
         `;
     });
 }
 
+/* APAGAR UTILIZADOR (Firestore apenas) */
+window.deleteUser = async function(uid){
+    if(!confirm("Tens a certeza que queres apagar este utilizador? ❌")) return;
+    try {
+        await deleteDoc(doc(db, "users", uid));
+        renderUsers();
+    } catch(err){
+        alert("Erro ao apagar: " + err.message);
+    }
+}
+
 // Carregar lista quando abrir
 renderUsers();
-
 </script>
 
 </body>
