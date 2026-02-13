@@ -1,28 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-PT">
 <head>
-    <!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-
-<script>
-  // Configuração do Firebase (substitui pelos teus dados)
-  const firebaseConfig = {
-    apiKey: "API_KEY",
-    authDomain: "PROJECT_ID.firebaseapp.com",
-    projectId: "PROJECT_ID",
-    storageBucket: "PROJECT_ID.appspot.com",
-    messagingSenderId: "SENDER_ID",
-    appId: "APP_ID"
-  };
-
-  // Inicializar Firebase
-  firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
-  const db = firebase.firestore();
-</script>
-
 <meta charset="UTF-8">
 <title>Hayes Auto</title>
 
@@ -71,8 +49,8 @@ button{
     cursor:pointer;
 }
 </style>
-</head>
 
+</head>
 <body>
 
 <div class="login-box">
@@ -82,62 +60,58 @@ button{
     <button onclick="login()">Entrar</button>
 </div>
 
-<script>
+<!-- Firebase Modular SDK -->
+<script type="module">
 
-function getUsers(){
-  return JSON.parse(localStorage.getItem("users")) || [];
-}
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
-let users = getUsers();
-
-if(users.length === 0){
-  users.push({ user:"patrao", pass:"1234", role:"admin" });
-  users.push({ user:"mecanico", pass:"1234", role:"staff" });
-  localStorage.setItem("users", JSON.stringify(users));
-}
-
-function login() {
-    const u = user.value.trim();
-    const p = pass.value.trim();
-
-    auth.signInWithEmailAndPassword(u + "@hayesauto.com", p)
-    .then((cred)=>{
-        // Pegar role
-        db.collection("users").doc(cred.user.uid).get()
-        .then(doc=>{
-            if(doc.exists){
-                localStorage.setItem("role", doc.data().role);
-                localStorage.setItem("user", u);
-                window.location.href = "dashboard.html";
-            }
-        });
-    })
-    .catch(err=>{
-        alert("Login inválido ❌ " + err.message);
-    });
-}
-
-    // Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+// Configuração Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyAOOQ4B0raow-AZ73zWqm9EWtowGNvhFCQ",
   authDomain: "hayes-auto.firebaseapp.com",
   projectId: "hayes-auto",
-  storageBucket: "hayes-auto.firebasestorage.app",
+  storageBucket: "hayes-auto.appspot.com",
   messagingSenderId: "630755395669",
   appId: "1:630755395669:web:087effd137517dd04e2cdc",
   measurementId: "G-5WX19ZBVZG"
 };
 
-// Initialize Firebase
+// Inicializar Firebase
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+// FUNÇÃO LOGIN
+window.login = async function() {
+    const u = document.getElementById("user").value.trim();
+    const p = document.getElementById("pass").value.trim();
+
+    if(!u || !p){
+        alert("Preenche todos os campos ❌");
+        return;
+    }
+
+    try {
+        // Firebase Auth exige email, adicionamos @hayesauto.com
+        const cred = await signInWithEmailAndPassword(auth, u + "@hayesauto.com", p);
+
+        // Pegar a role no Firestore
+        const docSnap = await getDoc(doc(db, "users", cred.user.uid));
+        if(docSnap.exists()){
+            localStorage.setItem("user", u);
+            localStorage.setItem("role", docSnap.data().role);
+            window.location.href = "dashboard.html";
+        } else {
+            alert("Erro: Utilizador sem role definida ❌");
+        }
+
+    } catch(err){
+        alert("Login inválido ❌ " + err.message);
+    }
+}
+
 </script>
 
 </body>
