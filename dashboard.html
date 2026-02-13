@@ -191,6 +191,33 @@ function deleteUser(username){
 
 /* Carregar lista quando abrir */
 renderUsers();
+function createUser() {
+    const user = document.getElementById("newUser").value.trim();
+    const pass = document.getElementById("newPass").value.trim();
+    const role = document.getElementById("newRole").value;
+
+    if(!user || !pass){
+        alert("Preenche todos os campos ❌");
+        return;
+    }
+
+    // Criar utilizador no Firebase Auth
+    auth.createUserWithEmailAndPassword(user + "@hayesauto.com", pass)
+    .then((cred) => {
+        // Guardar role no Firestore
+        db.collection("users").doc(cred.user.uid).set({
+            username: user,
+            role: role
+        });
+        alert("Utilizador criado com sucesso ✅");
+        document.getElementById("newUser").value = "";
+        document.getElementById("newPass").value = "";
+        renderUsers();
+    })
+    .catch((err)=>{
+        alert("Erro: " + err.message);
+    });
+}
 
 </script>
 
