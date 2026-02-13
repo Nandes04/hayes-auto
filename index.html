@@ -1,1 +1,100 @@
-<!DOCTYPE html> <html lang="pt-PT"> <head> <meta charset="UTF-8"> <title>Hayes Auto</title> <link rel="icon" type="image/png" href="favicon.png"> <style> body{ margin:0; height:100vh; background-image:url("./capa.png"); background-size:cover; background-position:center; display:flex; justify-content:center; align-items:center; font-family: Arial, sans-serif; } .login-box{ position:absolute; top:74%; backdrop-filter: blur(10px); background: rgba(0,0,0,0.45); padding:32px; border-radius:14px; width:260px; text-align:center; box-shadow:0 0 25px rgba(0,0,0,.7); } input{ width:100%; padding:10px; margin-top:10px; border:none; border-radius:6px; outline:none; background:#000; color:white; } input::placeholder{ color:#aaa; } button{ width:100%; margin-top:15px; padding:10px; border:none; border-radius:6px; background:#2563eb; color:white; font-weight:bold; cursor:pointer; } </style> </head> <body> <div class="login-box"> <input id="user" placeholder="Utilizador"> <input id="pass" type="password" placeholder="Senha"> <button onclick="login()">Entrar</button> </div> <script> function getUsers(){ return JSON.parse(localStorage.getItem("users")) || []; } /* CRIA ADMIN SE NÃO EXISTIR */ let users = getUsers(); if(users.length === 0){ users.push({ user:"patrao", pass:"1234", role:"admin" }); localStorage.setItem("users", JSON.stringify(users)); } function login(){ const u = user.value.trim(); const p = pass.value.trim(); const found = getUsers().find(x => x.user === u && x.pass === p ); if(!found){ alert("Login inválido ❌"); return; } localStorage.setItem("user", found.user); localStorage.setItem("role", found.role); window.location.href = "dashboard.html"; } </script> </body> </html>
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8">
+<title>Hayes Auto</title>
+
+<style>
+body{
+    margin:0;
+    height:100vh;
+    background-image:url("capa.png");
+    background-size:cover;
+    background-position:center;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-family: Arial, sans-serif;
+}
+
+.login-box{
+    backdrop-filter: blur(10px);
+    background: rgba(0,0,0,0.6);
+    padding:35px;
+    border-radius:15px;
+    width:280px;
+    text-align:center;
+    box-shadow:0 0 30px rgba(0,0,0,.8);
+}
+
+input{
+    width:100%;
+    padding:12px;
+    margin-top:12px;
+    border:none;
+    border-radius:6px;
+    background:#000;
+    color:white;
+}
+
+button{
+    width:100%;
+    margin-top:18px;
+    padding:12px;
+    border:none;
+    border-radius:6px;
+    background:#2563eb;
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<div class="login-box">
+    <h2 style="color:white;">Hayes Auto</h2>
+    <input id="user" placeholder="Utilizador">
+    <input id="pass" type="password" placeholder="Senha">
+    <button onclick="login()">Entrar</button>
+</div>
+
+<script>
+
+function getUsers(){
+  return JSON.parse(localStorage.getItem("users")) || [];
+}
+
+let users = getUsers();
+
+if(users.length === 0){
+  users.push({ user:"patrao", pass:"1234", role:"admin" });
+  users.push({ user:"mecanico", pass:"1234", role:"staff" });
+  localStorage.setItem("users", JSON.stringify(users));
+}
+
+function login(){
+
+  const u = user.value.trim();
+  const p = pass.value.trim();
+
+  const found = getUsers().find(x => 
+    x.user === u && x.pass === p
+  );
+
+  if(!found){
+    alert("Login inválido ❌");
+    return;
+  }
+
+  localStorage.setItem("user", found.user);
+  localStorage.setItem("role", found.role);
+
+  window.location.href = "dashboard.html";
+}
+
+</script>
+
+</body>
+</html>
