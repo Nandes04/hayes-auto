@@ -50,22 +50,11 @@ button{
 }
 </style>
 
-</head>
-<body>
-
-<div class="login-box">
-    <h2 style="color:white;">Hayes Auto</h2>
-    <input id="user" placeholder="Utilizador">
-    <input id="pass" type="password" placeholder="Senha">
-    <button onclick="login()">Entrar</button>
-</div>
-
 <!-- Firebase Modular SDK -->
 <script type="module">
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
 
 // Configuração Firebase
 const firebaseConfig = {
@@ -83,7 +72,34 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// FUNÇÃO LOGIN
+// Função para criar automaticamente conta "patrao"
+async function ensureAdmin() {
+    const email = "patrao@hayesauto.com";
+    const pass = "1234";
+
+    try {
+        // Tenta criar a conta
+        const cred = await createUserWithEmailAndPassword(auth, email, pass);
+        // Cria documento no Firestore com role admin
+        await setDoc(doc(db, "users", cred.user.uid), {
+            username: "patrao",
+            role: "admin"
+        });
+        console.log("Conta patrao criada automaticamente ✅");
+    } catch(err){
+        // Se já existir, não faz nada
+        if(err.code === "auth/email-already-in-use"){
+            console.log("Conta patrao já existe, ok ✅");
+        } else {
+            console.error(err.message);
+        }
+    }
+}
+
+// Chama a função assim que a página abre
+ensureAdmin();
+
+// Função de login
 window.login = async function() {
     const u = document.getElementById("user").value.trim();
     const p = document.getElementById("pass").value.trim();
@@ -94,27 +110,29 @@ window.login = async function() {
     }
 
     try {
-        // Firebase Auth exige email, adicionamos @hayesauto.com
         const cred = await signInWithEmailAndPassword(auth, u + "@hayesauto.com", p);
-
-        // Pegar a role no Firestore
-        const docSnap = await getDoc(doc(db, "users", cred.user.uid));
+        const docRef = doc(db, "users", cred.user.uid);
+        const docSnap = await getDoc(docRef);
         if(docSnap.exists()){
             localStorage.setItem("user", u);
             localStorage.setItem("role", docSnap.data().role);
             window.location.href = "dashboard.html";
         } else {
-            alert("Erro: Utilizador sem role definida ❌");
+            alert("Erro: Não foi possível ler role do utilizador ❌");
         }
-
     } catch(err){
         alert("Login inválido ❌ " + err.message);
     }
 }
-Utilizador: patrao
-Senha: 696969
-
 </script>
+</head>
 
+<body>
+<div class="login-box">
+    <h2 style="color:white;">Hayes Auto</h2>
+    <input id="user" placeholder="Utilizador">
+    <input id="pass" type="password" placeholder="Senha">
+    <button onclick="login()">Entrar</button>
+</div>
 </body>
 </html>
