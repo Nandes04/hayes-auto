@@ -3,78 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <title>Hayes Auto - Painel</title>
-
 <style>
-body{
-    margin:0;
-    font-family:Arial, sans-serif;
-    background:#111;
-    color:white;
-}
-
-/* MENU */
-nav{
-    background:#000;
-    padding:18px;
-    display:flex;
-    justify-content:center;
-    gap:50px;
-}
-
-nav a{
-    color:white;
-    text-decoration:none;
-    font-weight:bold;
-    cursor:pointer;
-}
-
-nav a:hover{
-    color:#2563eb;
-}
-
-/* CONTEÚDO */
-.tab{
-    display:none;
-    padding:50px;
-    text-align:center;
-}
-
-.tab.active{
-    display:block;
-}
-
-/* BOTÃO SAIR */
-.logout{
-    position:absolute;
-    top:15px;
-    right:20px;
-    background:#2563eb;
-    padding:8px 15px;
-    border-radius:6px;
-    cursor:pointer;
-}
-
-/* UTILIZADORES */
-.user-item{
-    margin:8px 0; 
-    background:#222; 
-    padding:10px; 
-    border-radius:6px;
-    display:flex; 
-    justify-content:space-between; 
-    align-items:center;
-}
-.user-item button{
-    background:red;
-    border:none;
-    color:white;
-    padding:5px 10px;
-    border-radius:5px;
-    cursor:pointer;
-}
+body{margin:0; font-family:Arial; background:#111; color:white;}
+nav{background:#000; padding:18px; display:flex; justify-content:center; gap:50px;}
+nav a{color:white; text-decoration:none; font-weight:bold; cursor:pointer;}
+nav a:hover{color:#2563eb;}
+.tab{display:none; padding:50px; text-align:center;}
+.tab.active{display:block;}
+.logout{position:absolute; top:15px; right:20px; background:#2563eb; padding:8px 15px; border-radius:6px; cursor:pointer;}
+.user-item{margin:8px 0; background:#222; padding:10px; border-radius:6px; display:flex; justify-content:space-between; align-items:center;}
+.user-item button{background:red; border:none; color:white; padding:5px 10px; border-radius:5px; cursor:pointer;}
 </style>
 </head>
-
 <body>
 
 <div class="logout" onclick="logout()">Sair</div>
@@ -88,146 +28,76 @@ nav a:hover{
 
 <div id="inicio" class="tab active">
   <h1>Bem-vindo à Hayes Auto 🚗</h1>
-  <p>Painel principal da oficina.</p>
 </div>
 
-<div id="servicos" class="tab">
-  <h1>Serviços</h1>
-  <p>Aqui vais colocar os serviços da oficina.</p>
-</div>
-
-<div id="stock" class="tab">
-  <h1>Stock</h1>
-  <p>Lista de peças e materiais.</p>
-</div>
+<div id="servicos" class="tab"><h1>Serviços</h1></div>
+<div id="stock" class="tab"><h1>Stock</h1></div>
 
 <div id="boss" class="tab">
   <h1>Painel do Boss 👑</h1>
-
   <h3>Criar Novo Utilizador</h3>
-
   <input id="newUser" placeholder="Nome do utilizador">
   <input id="newPass" placeholder="Senha">
-  
   <select id="newRole">
     <option value="staff">Mecânico</option>
     <option value="admin">Patrão</option>
   </select>
-
   <button onclick="createUser()">Criar Conta</button>
 
   <h3 style="margin-top:40px;">Utilizadores Existentes</h3>
   <div id="userList"></div>
 </div>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
-import { getFirestore, doc, setDoc, collection, getDocs, deleteDoc, getDoc } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js";
+<script>
+const USERS_JSON_URL = "COLOCA_AQUI_O_LINK_RAW_DO_TEU_JSON";
 
-// Config Firebase
-const firebaseConfig = {
-  apiKey: "AIzaSyAOOQ4B0raow-AZ73zWqm9EWtowGNvhFCQ",
-  authDomain: "hayes-auto.firebaseapp.com",
-  projectId: "hayes-auto",
-  storageBucket: "hayes-auto.appspot.com",
-  messagingSenderId: "630755395669",
-  appId: "1:630755395669:web:087effd137517dd04e2cdc",
-  measurementId: "G-5WX19ZBVZG"
-};
+if(!localStorage.getItem("user")) window.location.href = "index.html";
+if(localStorage.getItem("role") !== "admin") document.getElementById("bossTab").style.display = "none";
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-
-/* PROTEÇÃO */
-if(!localStorage.getItem("user")){
-    window.location.href = "index.html";
-}
-
-/* ESCONDER BOSS SE NÃO FOR ADMIN */
-if(localStorage.getItem("role") !== "admin"){
-    document.getElementById("bossTab").style.display = "none";
-}
-
-/* TROCA DE ABAS */
 function showTab(tabId){
-    document.querySelectorAll(".tab").forEach(tab=>{
-        tab.classList.remove("active");
-    });
+    document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
     document.getElementById(tabId).classList.add("active");
 }
 
-/* LOGOUT */
-async function logout(){
-    localStorage.removeItem("user");
-    localStorage.removeItem("role");
-    await signOut(auth);
-    window.location.href = "index.html";
+function logout(){
+    localStorage.clear();
+    window.location.href="index.html";
 }
 
-/* CRIAR UTILIZADOR NO FIREBASE */
-window.createUser = async function() {
-    const user = document.getElementById("newUser").value.trim();
-    const pass = document.getElementById("newPass").value.trim();
-    const role = document.getElementById("newRole").value;
-
-    if(localStorage.getItem("role") !== "admin"){
-        alert("Não tens permissão ❌");
-        return;
-    }
-
-    if(!user || !pass){
-        alert("Preenche todos os campos ❌");
-        return;
-    }
-
-    try {
-        const cred = await createUserWithEmailAndPassword(auth, user + "@hayesauto.com", pass);
-        await setDoc(doc(db, "users", cred.user.uid), {
-            username: user,
-            role: role
-        });
-        alert("Utilizador criado com sucesso ✅");
-        document.getElementById("newUser").value = "";
-        document.getElementById("newPass").value = "";
+let users = []; // lista local
+async function loadUsers(){
+    try{
+        const res = await fetch(USERS_JSON_URL);
+        users = await res.json();
         renderUsers();
-    } catch(err){
-        alert("Erro: " + err.message);
-    }
+    }catch(err){ alert("Erro ao carregar utilizadores: "+err.message);}
 }
 
-/* MOSTRAR LISTA DE UTILIZADORES */
-window.renderUsers = async function() {
+function renderUsers(){
     const container = document.getElementById("userList");
     container.innerHTML = "";
-    const querySnapshot = await getDocs(collection(db, "users"));
-    querySnapshot.forEach(docu => {
-        const u = docu.data();
-        const uid = docu.id;
+    users.forEach(u=>{
         container.innerHTML += `
-            <div class="user-item">
-                <span>${u.username} (${u.role})</span>
-                <button onclick="deleteUser('${uid}')">Apagar</button>
-            </div>
-        `;
+        <div class="user-item">
+            <span>${u.user} (${u.role})</span>
+        </div>`;
     });
 }
 
-/* APAGAR UTILIZADOR (Firestore apenas) */
-window.deleteUser = async function(uid){
-    if(!confirm("Tens a certeza que queres apagar este utilizador? ❌")) return;
-    try {
-        await deleteDoc(doc(db, "users", uid));
-        renderUsers();
-    } catch(err){
-        alert("Erro ao apagar: " + err.message);
-    }
+function createUser(){
+    const u = document.getElementById("newUser").value.trim();
+    const p = document.getElementById("newPass").value.trim();
+    const r = document.getElementById("newRole").value;
+    if(!u || !p){ alert("Preenche todos os campos"); return;}
+    if(users.find(x=>x.user===u)){ alert("Utilizador já existe"); return;}
+    users.push({user:u, pass:p, role:r});
+    renderUsers();
+    alert("Conta criada ✅\nAgora precisas de atualizar o JSON online manualmente com esta nova conta.");
+    document.getElementById("newUser").value="";
+    document.getElementById("newPass").value="";
 }
 
-// Carregar lista quando abrir
-renderUsers();
+loadUsers();
 </script>
-
 </body>
 </html>
