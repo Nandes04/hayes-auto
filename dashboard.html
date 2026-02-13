@@ -2,316 +2,117 @@
 <html lang="pt-PT">
 <head>
 <meta charset="UTF-8">
-<title>Painel - Hayes Auto</title>
+<title>Hayes Auto - Painel</title>
 
 <style>
 body{
-  margin:0;
-  background:radial-gradient(circle at top,#0f172a,#020617);
-  color:white;
-  font-family:Arial,sans-serif;
-  padding-top:90px;
+    margin:0;
+    font-family:Arial, sans-serif;
+    background:#111;
+    color:white;
 }
 
-/* TOPO */
-
-.topbar{
-  position:fixed;
-  top:0;
-  left:0;
-  right:0;
-  height:70px;
-  background:linear-gradient(180deg,#020617,#020617cc);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  backdrop-filter:blur(8px);
-  box-shadow:0 6px 25px rgba(0,0,0,.8);
+/* MENU */
+nav{
+    background:#000;
+    padding:18px;
+    display:flex;
+    justify-content:center;
+    gap:50px;
 }
 
-.logo{
-  position:absolute;
-  left:30px;
-  font-size:22px;
-  font-weight:700;
+nav a{
+    color:white;
+    text-decoration:none;
+    font-weight:bold;
+    cursor:pointer;
 }
 
-.menu{
-  display:flex;
-  gap:42px;
-}
-
-.menu span{
-  cursor:pointer;
-  font-weight:600;
-  color:#9fb0ff;
-}
-
-.menu span.active,
-.menu span:hover{
-  color:#4f7cff;
+nav a:hover{
+    color:#2563eb;
 }
 
 /* CONTEÚDO */
-
-.container{
-  padding:35px;
-  max-width:900px;
-  margin:auto;
+.tab{
+    display:none;
+    padding:50px;
+    text-align:center;
 }
 
-#welcome{
-  font-size:22px;
-  margin-bottom:25px;
+.tab.active{
+    display:block;
 }
 
-/* ESTATÍSTICAS */
-
-.stats-box{
-  margin:auto;
-  max-width:700px;
-  background:linear-gradient(180deg,#0b1220,#020617);
-  border-radius:20px;
-  padding:20px 26px;
-  display:flex;
-  justify-content:space-between;
-  box-shadow:0 20px 45px rgba(0,0,0,.85);
+/* BOTÃO SAIR */
+.logout{
+    position:absolute;
+    top:15px;
+    right:20px;
+    background:#2563eb;
+    padding:8px 15px;
+    border-radius:6px;
+    cursor:pointer;
 }
-
-.stat{
-  text-align:center;
-  flex:1;
-}
-
-.stat h4{
-  font-size:12px;
-  color:#9fb0d1;
-}
-
-.value{
-  font-size:26px;
-  font-weight:800;
-}
-
-.green{ color:#60a5fa; }
-.blue{ color:#22c55e; }
-
-/* CARTÕES */
-
-.card{
-  background:linear-gradient(180deg,#1e293b,#0b1220);
-  padding:24px;
-  border-radius:18px;
-  margin-top:22px;
-  box-shadow:0 18px 45px rgba(0,0,0,.7);
-}
-
-/* INPUTS */
-
-input, select{
-  width:260px;
-  padding:9px 12px;
-  margin-top:12px;
-  border-radius:10px;
-  background:#020617;
-  color:white;
-  border:1px solid rgba(255,255,255,.08);
-}
-
-/* BOTÕES */
-
-button{
-  margin-top:16px;
-  padding:9px 16px;
-  border-radius:10px;
-  background:#2563eb;
-  color:white;
-  border:none;
-  cursor:pointer;
-}
-
-/* LISTA */
-
-.user-row{
-  display:flex;
-  justify-content:space-between;
-  background:#020617;
-  padding:12px;
-  border-radius:12px;
-  margin-top:10px;
-}
-
-/* LOGOUT */
-
-.logout-btn{
-  position:fixed;
-  bottom:14px;
-  left:14px;
-  font-size:12px;
-  padding:7px 12px;
-  border-radius:10px;
-  background:#1e40af;
-}
-
-/* SISTEMA */
-
-.section{ display:none; }
-.section.active{ display:block; }
-.hidden{ display:none; }
 </style>
 </head>
 
 <body>
 
-<div class="topbar">
-  <div class="logo">Hayes Auto</div>
-  <div class="menu">
-    <span class="active" onclick="showTab('inicio',this)">INÍCIO</span>
-    <span onclick="showTab('servicos',this)">SERVIÇOS</span>
-    <span onclick="showTab('stock',this)">STOCK</span>
-    <span id="bossTab" onclick="showTab('boss',this)">BOSS</span>
-  </div>
+<div class="logout" onclick="logout()">Sair</div>
+
+<nav>
+  <a onclick="showTab('inicio')">Início</a>
+  <a onclick="showTab('servicos')">Serviços</a>
+  <a onclick="showTab('stock')">Stock</a>
+  <a id="bossTab" onclick="showTab('boss')">Boss</a>
+</nav>
+
+<div id="inicio" class="tab active">
+  <h1>Bem-vindo à Hayes Auto 🚗</h1>
+  <p>Painel principal da oficina.</p>
 </div>
 
-<div class="container">
-
-<p id="welcome"></p>
-
-<!-- INICIO -->
-<div id="inicio" class="section active">
-
-  <div class="stats-box">
-    <div class="stat">
-      <h4>Faturação pessoal</h4>
-      <div class="value green">13 500,00 €</div>
-    </div>
-
-    <div class="stat">
-      <h4>Serviços</h4>
-      <div class="value">2</div>
-    </div>
-
-    <div class="stat">
-      <h4>Pagamento (40%)</h4>
-      <div class="value blue">5 400,00 €</div>
-    </div>
-  </div>
-
+<div id="servicos" class="tab">
+  <h1>Serviços</h1>
+  <p>Aqui vais colocar os serviços da oficina.</p>
 </div>
 
-<!-- SERVICOS -->
-<div id="servicos" class="section">
-  <div class="card">Gestão de serviços</div>
+<div id="stock" class="tab">
+  <h1>Stock</h1>
+  <p>Lista de peças e materiais.</p>
 </div>
 
-<!-- STOCK -->
-<div id="stock" class="section admin-only">
-  <div class="card">Gestão de stock</div>
+<div id="boss" class="tab">
+  <h1>Painel do Boss 👑</h1>
+  <p>Área administrativa exclusiva.</p>
 </div>
-
-<!-- BOSS -->
-<div id="boss" class="section admin-only">
-
-<div class="card">
-<h2>Criar utilizador</h2>
-
-<input id="newUser" placeholder="Utilizador">
-<input id="newPass" type="password" placeholder="Senha">
-
-<select id="newRole">
-  <option value="mecanico">Funcionário</option>
-  <option value="admin">Patrão</option>
-</select>
-
-<button onclick="createUser()">Criar conta</button>
-
-<h3 style="margin-top:20px">Contas</h3>
-<div id="userList"></div>
-
-</div>
-</div>
-
-</div>
-
-<button class="logout-btn" onclick="logout()">Sair</button>
 
 <script>
-const role = localStorage.getItem("role");
-const user = localStorage.getItem("user");
 
-if(!role) location.href="index.html";
-
-welcome.innerText = `Bem-vindo, ${user} (${role})`;
-
-if(role !== "admin"){
-  document.querySelectorAll(".admin-only").forEach(e=>e.classList.add("hidden"));
-  bossTab.style.display="none";
+/* PROTEÇÃO */
+if(!localStorage.getItem("user")){
+    window.location.href = "index.html";
 }
 
-function showTab(tab,el){
-  document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
-  document.getElementById(tab).classList.add("active");
-  document.querySelectorAll(".menu span").forEach(m=>m.classList.remove("active"));
-  el.classList.add("active");
+/* ESCONDER BOSS SE NÃO FOR ADMIN */
+if(localStorage.getItem("role") !== "admin"){
+    document.getElementById("bossTab").style.display = "none";
 }
 
-function getUsers(){
-  return JSON.parse(localStorage.getItem("users")) || [];
+/* TROCA DE ABAS */
+function showTab(tabId){
+    document.querySelectorAll(".tab").forEach(tab=>{
+        tab.classList.remove("active");
+    });
+    document.getElementById(tabId).classList.add("active");
 }
 
-function saveUsers(u){
-  localStorage.setItem("users",JSON.stringify(u));
-}
-
-function createUser(){
-  let users = getUsers();
-  users.push({
-    user:newUser.value,
-    pass:newPass.value,
-    role:newRole.value
-  });
-  saveUsers(users);
-  renderUsers();
-}
-
-function renderUsers(){
-  userList.innerHTML="";
-  getUsers().forEach((u,i)=>{
-    userList.innerHTML += `
-      <div class="user-row">
-        ${u.user} — ${u.role}
-        <button onclick="deleteUser(${i})">Apagar</button>
-      </div>`;
-  });
-}
-
-function deleteUser(i){
-  let users = getUsers();
-  users.splice(i,1);
-  saveUsers(users);
-  renderUsers();
-}
-
+/* LOGOUT */
 function logout(){
-  localStorage.clear();
-  location.href="index.html";
+    localStorage.removeItem("user");
+    localStorage.removeItem("role");
+    window.location.href = "index.html";
 }
-
-renderUsers();
- 
-  <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-
-const firebaseConfig = {
-  apiKey: "XXX",
-  authDomain: "XXX",
-  projectId: "XXX",
-};
-
-initializeApp(firebaseConfig);
-const auth = getAuth();
-</script>
 
 </script>
 
