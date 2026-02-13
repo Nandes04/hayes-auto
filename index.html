@@ -2,8 +2,7 @@
 <html lang="pt-PT">
 <head>
 <meta charset="UTF-8">
-<title>Hayes Auto</title>
-
+<title>Hayes Auto - Login</title>
 <style>
 body{
     margin:0;
@@ -16,7 +15,6 @@ body{
     align-items:center;
     font-family: Arial, sans-serif;
 }
-
 .login-box{
     backdrop-filter: blur(10px);
     background: rgba(0,0,0,0.6);
@@ -26,7 +24,6 @@ body{
     text-align:center;
     box-shadow:0 0 30px rgba(0,0,0,.8);
 }
-
 input{
     width:100%;
     padding:12px;
@@ -36,7 +33,6 @@ input{
     background:#000;
     color:white;
 }
-
 button{
     width:100%;
     margin-top:18px;
@@ -50,7 +46,7 @@ button{
 }
 </style>
 
-<!-- Firebase Modular SDK -->
+<!-- Firebase SDK -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js";
@@ -67,22 +63,17 @@ const firebaseConfig = {
   measurementId: "G-5WX19ZBVZG"
 };
 
-// Inicializar Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// Cria automaticamente conta "patrao" se não existir
+// Cria automaticamente a conta admin
 async function ensureAdmin() {
     const email = "patrao@hayesauto.com";
     const pass = "1234";
-
     try {
         const cred = await createUserWithEmailAndPassword(auth, email, pass);
-        await setDoc(doc(db, "users", cred.user.uid), {
-            username: "patrao",
-            role: "admin"
-        });
+        await setDoc(doc(db, "users", cred.user.uid), {username:"patrao", role:"admin"});
         console.log("Conta patrao criada ✅");
     } catch(err){
         if(err.code === "auth/email-already-in-use"){
@@ -92,29 +83,23 @@ async function ensureAdmin() {
         }
     }
 }
-
 ensureAdmin();
 
+// Login
 window.login = async function(){
     const u = document.getElementById("user").value.trim();
     const p = document.getElementById("pass").value.trim();
-
-    if(!u || !p){
-        alert("Preenche todos os campos ❌");
-        return;
-    }
+    if(!u || !p){ alert("Preenche todos os campos ❌"); return; }
 
     try{
-        const cred = await signInWithEmailAndPassword(auth, u + "@hayesauto.com", p);
-        const docRef = doc(db, "users", cred.user.uid);
-        const docSnap = await getDoc(docRef);
-
+        const cred = await signInWithEmailAndPassword(auth, u+"@hayesauto.com", p);
+        const docSnap = await getDoc(doc(db, "users", cred.user.uid));
         if(docSnap.exists()){
             localStorage.setItem("user", u);
             localStorage.setItem("role", docSnap.data().role);
             window.location.href = "dashboard.html";
         } else {
-            alert("Erro: Não foi possível ler role do utilizador ❌");
+            alert("Erro ao obter role do utilizador ❌");
         }
     } catch(err){
         alert("Login inválido ❌ " + err.message);
@@ -129,4 +114,6 @@ window.login = async function(){
     <input id="user" placeholder="Utilizador">
     <input id="pass" type="password" placeholder="Senha">
     <button onclick="login()">Entrar</button>
-</
+</div>
+</body>
+</html>
